@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body id="app-body">
+
+<!-- DARK MODE TOGGLE -->
+<div class="mode-toggle">
+    <label class="switch">
+        <input type="checkbox" id="mode-toggle-checkbox">
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="container">
+
+    <h1>Error Occurred</h1>
+
+    <div class="results">
+        <h2>Error Details</h2>
+        <p>{{ error_message }}</p>
+    </div>
+
+    <br>
+
+    <a href="/" class="link-color">← Go back to search</a>
+
+</div>
+
+<!-- Shared JavaScript for theme + dropzone + preview -->
+<script src="/static/js/main.js"></script>
+
+</body>
+</html>

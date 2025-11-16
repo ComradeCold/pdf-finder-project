@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Finder</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body id="app-body">
+
+<div class="mode-toggle">
+    <label class="switch">
+        <input type="checkbox" id="mode-toggle-checkbox">
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="container">
+<h1>PDF Finder</h1>
+
+<form id="form" method="post" enctype="multipart/form-data">
+    <input type="text" name="query" placeholder="Enter search term" value="{{ query }}">
+
+    <div class="drop-zone" id="drop-zone">
+        Drop image here or click to upload<br>
+    </div>
+
+    <input type="file" name="image" id="image-input" style="display:none;" accept="image/*">
+
+    <img id="preview" class="preview" />
+
+    <button type="submit">Search</button>
+</form>
+
+{% if pdfs %}
+<div class="results">
+    <h2>PDF Search Results</h2>
+    <ul>
+        {% for pdf in pdfs %}
+            <li><a href="{{ pdf }}" target="_blank">{{ pdf }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+</div>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
+

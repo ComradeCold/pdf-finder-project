@@ -1,0 +1,168 @@
+/* VARIABLES */
+:root {
+    --bg-color: #f4f7f6;
+    --container-bg: #fff;
+    --text-color: #333;
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --dropzone-bg: #eaf6ff;
+    --dropzone-border: #007bff;
+    --input-bg: #fff;
+    --input-border: #ccc;
+    --input-text: #333;
+    --placeholder-color: #777;
+    --link-color: #17a2b8;
+    --link-hover: #0d6e7f;
+    --shadow-color: rgba(0,0,0,0.1);
+}
+
+/* DARK MODE */
+body.dark-mode {
+    --bg-color: #000;
+    --container-bg: #1a1a1a;
+    --text-color: #fff;
+    --primary-color: #ffc107;
+    --primary-hover: #ffcd38;
+    --dropzone-bg: #333;
+    --dropzone-border: #ffc107;
+    --input-bg: #333;
+    --input-border: #555;
+    --input-text: #fff;
+    --placeholder-color: #aaa;
+    --link-color: #ffc107;
+    --link-hover: #ffcd38;
+    --shadow-color: rgba(255,255,255,0.1);
+}
+
+/* GENERAL */
+body {
+    margin: 0;
+    padding: 40px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: Segoe UI, Tahoma, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    background: var(--container-bg);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+h1 {
+    text-align: center;
+    color: var(--primary-color);
+}
+
+/* TOGGLE SWITCH */
+.mode-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+.switch input { opacity: 0; }
+.slider {
+    position: absolute;
+    background: var(--primary-color);
+    border-radius: 34px;
+    top: 0; left: 0; right: 0; bottom: 0;
+    cursor: pointer;
+}
+.slider:before {
+    content: "";
+    position: absolute;
+    width: 26px; height: 26px;
+    left: 4px; bottom: 4px;
+    background: var(--container-bg);
+    border-radius: 50%;
+    transition: .4s;
+}
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* FORM */
+input[type="text"] {
+    padding: 12px;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--input-text);
+}
+
+/* DROP ZONE */
+.drop-zone {
+    margin-top: 10px;
+    width: 100%;
+    height: 150px;
+    border: 2px dashed var(--dropzone-border);
+    border-radius: 8px;
+    background: var(--dropzone-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-align: center;
+}
+
+img.preview {
+    margin-top: 15px;
+    width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    display: none;
+}
+
+button {
+    padding: 12px;
+    margin-top: 10px;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 6px;
+    color: var(--container-bg);
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--primary-hover);
+}
+
+/* RESULTS */
+.results {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 8px;
+    background: var(--container-bg);
+    border: 1px solid var(--input-border);
+}
+.results h2 {
+    color: var(--primary-color);
+}
+.results ul {
+    list-style: none;
+    padding: 0;
+}
+.results li {
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--input-border);
+}
+.results a {
+    color: var(--link-color);
+    word-break: break-all;
+}
+
