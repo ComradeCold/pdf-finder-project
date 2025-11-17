@@ -1,9 +1,9 @@
-from flask import Flask, request, render_template_string
-import requests
+from flask import Flask, request, render_template
 import os
+import requests
+from google.cloud import vision
 
 app = Flask(__name__)
-
 
 API_KEY = os.environ.get("API_KEY")
 CX = os.environ.get("CX")
@@ -11,74 +11,81 @@ CX = os.environ.get("CX")
 
 def google_pdf_search(query, num_results=10):
     url = "https://www.googleapis.com/customsearch/v1"
-    params = {"q": f"{query} filetype:pdf", "key": API_KEY, "cx": CX, "num": num_results}
-    pdf_links = []
+    params = {
+        "q": f"{query} filetype:pdf",
+        "key": API_KEY,
+        "cx": CX,
+        "num": num_results,
+    }
     try:
         response = requests.get(url, params=params).json()
-        print(response) 
-        if "items" in response:
-            for item in response["items"]:
-                link = item.get("link", "")
-                if ".pdf" in link.lower():
-                    pdf_links.append(link)
-        else:
-            print("No results from Google API:", response.get("error", response))
+
+        if response.get("error"):
+            return {"error": f"Google Search API Error: {response['error']['message']}"}
+
+        return [
+            item["link"] for item in response.get("items", []) if item["link"].endswith(".pdf")
+        ]
+    except requests.RequestException as e:
+        return {"error": f"Network Error connecting to Google Search API: {e}"}
     except Exception as e:
-        print("Error during API request:", e)
-    return pdf_links
+        return {"error": f"Unexpected search error: {e}"}
+
+
+def extract_text_from_image(file):
+    try:
+        client = vision.ImageAnnotatorClient()
+        image = vision.Image(content=file.read())
+        response = client.text_detection(image=image)
+
+        if response.error.message:
+            return {"error": f"Google Vision API Error: {response.error.message}"}
+
+        if response.text_annotations:
+            return response.text_annotations[0].description
+
+        return ""
+    except Exception as e:
+        return {"error": f"Unexpected OCR error: {e}"}
 
 
 @app.route("/", methods=["GET", "POST"])
 def home():
     pdfs = []
+    extracted_text = ""
     query = ""
+    error_message = None
+
     if request.method == "POST":
-        query = request.form.get("query")
-        if query:
-            pdfs = google_pdf_search(query)
+        try:
+            query = request.form.get("query", "")
+            uploaded_image = request.files.get("image")
 
-    
-    html = """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>PDF Finder</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        h1 { color: #333; }
-        input[type=text] { width: 400px; padding: 8px; }
-        input[type=submit] { padding: 8px 12px; }
-        .results { margin-top: 20px; border: 1px solid #ccc; padding: 15px; max-width: 700px; background: #f9f9f9; }
-        .results ul { list-style-type: none; padding-left: 0; }
-        .results li { margin-bottom: 8px; }
-    </style>
-</head>
-<body>
-    <h1>PDF Finder</h1>
-    <form method="post">
-        <input type="text" name="query" placeholder="Enter search term" value="{{query}}" required>
-        <input type="submit" value="Search">
-    </form>
+            if uploaded_image:
+                result = extract_text_from_image(uploaded_image)
+                if isinstance(result, dict):
+                    error_message = result["error"]
+                else:
+                    extracted_text = result
 
-    {% if pdfs %}
-        <div class="results">
-            <h2>PDF Results:</h2>
-            <ul>
-                {% for pdf in pdfs %}
-                    <li><a href="{{pdf}}" target="_blank">{{pdf}}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% elif query %}
-        <p>No PDFs found for "<strong>{{query}}</strong>"</p>
-    {% endif %}
-</body>
-</html>
-"""
+            if not error_message:
+                final_query = f"{query} {extracted_text}".strip()
+                if final_query:
+                    result = google_pdf_search(final_query)
+                    if isinstance(result, dict):
+                        error_message = result["error"]
+                    else:
+                        pdfs = result
 
+        except Exception as e:
+            error_message = f"Internal server error: {e}"
 
-    return render_template_string(html, pdfs=pdfs, query=query)
+    if error_message:
+        return render_template("error.html", error_message=error_message)
+
+    return render_template("index.html", pdfs=pdfs, query=query)
 
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+
