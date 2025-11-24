@@ -3,6 +3,85 @@
 <head>
     <title>PDF Finder</title>
     <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+    .favorite-btn {
+        background: none;
+        border: 2px solid #ccc;
+        color: #ccc;
+        padding: 8px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+        margin-left: 10px;
+        transition: all 0.3s ease;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .favorite-btn:hover {
+        border-color: #ff6b6b;
+        color: #ff6b6b;
+    }
+
+    .favorite-btn.favorited {
+        background: #ff6b6b;
+        border-color: #ff6b6b;
+        color: white;
+    }
+
+    .pdf-link {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        word-break: break-all;
+    }
+
+    .pdf-link a {
+        flex-grow: 1;
+        text-decoration: none;
+        color: #007bff;
+        word-break: break-all;
+        overflow-wrap: break-word;
+    }
+
+    .pdf-link a:hover {
+        text-decoration: underline;
+    }
+
+    .favorites-section {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #eaf6ff;
+        border-radius: 8px;
+        border: 1px solid #eaf6ff;
+    }
+
+    .favorite-item {
+        padding: 8px;
+        margin-bottom: 5px;
+        background: white;
+        border-radius: 5px;
+        border-left: 3px solid #fdcb6e;
+        word-break: break-all;
+    }
+
+    .favorite-item a {
+        text-decoration: none;
+        color: #007bff;
+        word-break: break-all;
+    }
+
+    .favorite-item a:hover {
+        text-decoration: underline;
+    }
+    </style>
 </head>
 <body id="app-body">
 
@@ -31,21 +110,45 @@
 </form>
 
 {% if pdfs %}
-<div class="results">
-    <h2>PDF Search Results</h2>
-    <ul>
+<div class="search-results">
+    <h3>Search Results</h3>
+    <div class="results-list">
         {% for pdf in pdfs %}
-            <li><a href="{{ pdf }}" target="_blank" class="pdf-link">{{ pdf }}</a></li>
+            <div class="pdf-link">
+                <a href="{{ pdf }}" target="_blank" style="flex-grow: 1;">{{ pdf }}</a>
+                <button class="favorite-btn" onclick="addFavorite('{{ pdf }}', this)">
+                    ♡
+                </button>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 </div>
 {% endif %}
 
+<!-- Favorites Section -->
+<div class="favorites-section">
+    <h3>Your Favorites:</h3>
+    {% if favorites %}
+        <div class="favorites-list">
+            {% for favorite in favorites %}
+                <div class="favorite-item">
+                    <a href="{{ favorite[0] }}" target="_blank">{{ favorite[0] }}</a>
+                    <small style="color: #888; display: block;">
+                        Saved: {{ favorite[1] }}
+                        <button onclick="removeFavoriteFromFavoritesSection('{{ favorite[0] }}')" style="margin-left: 10px; background: #ff6b6b; color: white; border: none; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-size: 12px;">Remove</button>
+                    </small>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #888; font-style: italic;">No favorites yet. Click the "Favorite" button next to PDF links to save them here.</p>
+    {% endif %}
+</div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".pdf-link").forEach(link => {
+    document.querySelectorAll(".pdf-link a").forEach(link => {
         link.addEventListener("click", () => {
             fetch("/api/click", {
                 method: "POST",
@@ -60,4 +163,3 @@ document.addEventListener("DOMContentLoaded", () => {
 <script src="/static/js/main.js"></script>
 </body>
 </html>
-
