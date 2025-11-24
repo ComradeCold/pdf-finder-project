@@ -19,3 +19,5 @@ google-auth==2.29.0
 google-auth-oauthlib==1.2.3    
 google-cloud-vision==3.4.5  
 
+gunicorn==21.2.0
+pymysql==1.1.0
