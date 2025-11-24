@@ -35,13 +35,27 @@
     <h2>PDF Search Results</h2>
     <ul>
         {% for pdf in pdfs %}
-            <li><a href="{{ pdf }}" target="_blank">{{ pdf }}</a></li>
+            <li><a href="{{ pdf }}" target="_blank" class="pdf-link">{{ pdf }}</a></li>
         {% endfor %}
     </ul>
 </div>
 {% endif %}
 
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".pdf-link").forEach(link => {
+        link.addEventListener("click", () => {
+            fetch("/api/click", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ link_url: link.href })
+            });
+        });
+    });
+});
+</script>
 
 <script src="/static/js/main.js"></script>
 </body>

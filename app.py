@@ -1,6 +1,7 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import os
 import requests
+import mysql.connector
 from google.cloud import vision
 
 app = Flask(__name__)
@@ -85,6 +86,38 @@ def home():
 
     return render_template("index.html", pdfs=pdfs, query=query)
 
+config = {
+    'user': 'appuser',
+    'password': 'Ajiefw9340*',
+    'host': '34.66.54.180',
+    'database': 'pdf_finder'
+}
+
+def store_click(link_url):
+    cnx = mysql.connector.connect(**config)
+    cursor = cnx.cursor()
+
+    cursor.execute("SELECT id FROM pdf_clicks WHERE link_url = %s", (link_url,))
+    exists = cursor.fetchone()
+
+    if not exists:
+        cursor.execute("INSERT INTO pdf_clicks (link_url) VALUES (%s)", (link_url,))
+        cnx.commit()
+
+    cursor.close()
+    cnx.close()
+
+
+@app.post("/api/click")
+def api_click():
+    data = request.json
+    link = data.get("link_url")
+
+    if not link:
+        return jsonify({"error": "Missing link_url"}), 400
+
+    store_click(link)
+    return jsonify({"status": "ok", "saved": link})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
