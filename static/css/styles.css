@@ -11,9 +11,24 @@
     --input-border: #ccc;
     --input-text: #333;
     --placeholder-color: #777;
-    --link-color: #17a2b8;
-    --link-hover: #0d6e7f;
+    --link-color: #007bff; /* Matching the link color used in index.html */
+    --link-hover: #0056b3;
     --shadow-color: rgba(0,0,0,0.1);
+
+    /* Favorites/Link Specific Variables */
+    --favorite-btn-color: #ccc;
+    --favorite-btn-border: #ccc;
+    --favorite-btn-hover: #ff6b6b;
+    --favorite-btn-active-bg: #ff6b6b;
+    --favorite-btn-active-color: white;
+
+    --pdf-link-bg: #f8f9fa;
+    --favorites-section-bg: #eaf6ff;
+    --favorite-item-bg: white;
+    --favorite-item-border: #fdcb6e;
+    --favorite-item-text: #888;
+    --remove-btn-bg: #ff6b6b;
+    --remove-btn-color: white;
 }
 
 /* DARK MODE */
@@ -32,6 +47,21 @@ body.dark-mode {
     --link-color: #ffc107;
     --link-hover: #ffcd38;
     --shadow-color: rgba(255,255,255,0.1);
+
+    /* Favorites/Link Specific Dark Mode Variables */
+    --favorite-btn-color: #aaa;
+    --favorite-btn-border: #555;
+    --favorite-btn-hover: #e74c3c;
+    --favorite-btn-active-bg: #e74c3c;
+    --favorite-btn-active-color: #fff;
+
+    --pdf-link-bg: #2a2a2a;
+    --favorites-section-bg: #2a2a2a;
+    --favorite-item-bg: #333;
+    --favorite-item-border: #ffc107;
+    --favorite-item-text: #aaa;
+    --remove-btn-bg: #e74c3c;
+    --remove-btn-color: white;
 }
 
 /* GENERAL */
@@ -161,8 +191,112 @@ button:hover {
     padding: 10px 0;
     border-bottom: 1px dashed var(--input-border);
 }
-.results a {
+.results a, .link-color {
     color: var(--link-color);
     word-break: break-all;
 }
 
+
+/* PDF LINK AND FAVORITE BUTTON STYLES (Moved from index.html) */
+.pdf-link {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: var(--pdf-link-bg);
+    border-radius: 5px;
+    word-break: break-all;
+}
+
+.pdf-link a {
+    flex-grow: 1;
+    text-decoration: none;
+    color: var(--link-color);
+    word-break: break-all;
+    overflow-wrap: break-word;
+}
+
+.pdf-link a:hover {
+    text-decoration: underline;
+}
+
+.favorite-btn {
+    background: none;
+    border: 2px solid var(--favorite-btn-border);
+    color: var(--favorite-btn-color); 
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.favorite-btn:hover {
+    border-color: var(--favorite-btn-hover);
+    color: var(--favorite-btn-hover);
+}
+
+.favorite-btn.favorited {
+    background: var(--favorite-btn-active-bg);
+    border-color: var(--favorite-btn-active-bg);
+    color: var(--favorite-btn-active-color);
+}
+
+
+/* Favorites Section (Moved and Updated from index.html) */
+.favorites-section {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: var(--favorites-section-bg);
+    border-radius: 8px;
+    border: 1px solid var(--favorites-section-bg);
+}
+
+.favorite-item {
+    padding: 8px;
+    margin-bottom: 5px;
+    background: var(--favorite-item-bg);
+    border-radius: 5px;
+    border-left: 3px solid var(--favorite-item-border);
+    word-break: break-all;
+}
+
+.favorite-item a {
+    text-decoration: none;
+    color: var(--link-color);
+    word-break: break-all;
+}
+
+.favorite-item a:hover {
+    text-decoration: underline;
+}
+
+.favorite-item small {
+    color: var(--favorite-item-text);
+    display: block;
+}
+
+.no-favorites-message {
+    /* Style for the empty favorites message */
+    color: var(--favorite-item-text);
+    font-style: italic;
+}
+
+.remove-btn {
+    /* Style for the Remove button */
+    background: var(--remove-btn-bg);
+    color: var(--remove-btn-color);
+    border: none;
+    padding: 2px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 10px;
+}

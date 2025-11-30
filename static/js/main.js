@@ -152,29 +152,39 @@ function removeFavoriteFromList(pdfUrl) {
     
     if (favoritesList.children.length === 0) {
         const favoritesSection = document.querySelector('.favorites-section');
-        const noFavoritesMessage = document.createElement('p');
-        noFavoritesMessage.style.cssText = 'color: #888; font-style: italic;';
-        noFavoritesMessage.textContent = 'No favorites yet. Click the "Favorite" button next to PDF links to save them here.';
-        favoritesSection.appendChild(noFavoritesMessage);
-        favoritesList.remove();
+        if (favoritesSection) {
+            const noFavoritesMessage = document.createElement('p');
+            // Use the new class defined in styles.css
+            noFavoritesMessage.className = 'no-favorites-message'; 
+            noFavoritesMessage.textContent = 'No favorites yet. Click the "Favorite" button next to PDF links to save them here.';
+            favoritesSection.appendChild(noFavoritesMessage);
+            favoritesList.remove();
+        }
     }
 }
 
 function addFavoriteToList(pdfUrl, timestamp) {
     const favoritesSection = document.querySelector('.favorites-section');
-    const favoritesList = favoritesSection.querySelector('.favorites-list');
-    const noFavoritesMessage = favoritesSection.querySelector('p');
+    if (!favoritesSection) return;
+
+    let actualFavoritesList = favoritesSection.querySelector('.favorites-list');
+    
+    // Select using the new class name
+    const noFavoritesMessage = favoritesSection.querySelector('.no-favorites-message');
     
     if (noFavoritesMessage) {
         noFavoritesMessage.remove();
     }
     
-    let actualFavoritesList = favoritesList;
-    if (!favoritesList) {
+    if (!actualFavoritesList) {
         actualFavoritesList = document.createElement('div');
         actualFavoritesList.className = 'favorites-list';
         const h3 = favoritesSection.querySelector('h3');
-        h3.insertAdjacentElement('afterend', actualFavoritesList);
+        if (h3) {
+            h3.insertAdjacentElement('afterend', actualFavoritesList);
+        } else {
+            favoritesSection.appendChild(actualFavoritesList);
+        }
     }
     
     const existingItems = actualFavoritesList.querySelectorAll('.favorite-item');
@@ -189,10 +199,13 @@ function addFavoriteToList(pdfUrl, timestamp) {
     
     const timeText = formatTimestamp(timestamp);
     
+    // Use the new CSS class 'remove-btn'
+    const removeButtonHTML = `<button class="remove-btn" onclick="removeFavoriteFromFavoritesSection('${pdfUrl}')">Remove</button>`;
+
     if (existingItem) {
         const timeElement = existingItem.querySelector('small');
         if (timeElement) {
-            timeElement.innerHTML = `Saved: ${timeText} <button onclick="removeFavoriteFromFavoritesSection('${pdfUrl}')" style="margin-left: 10px; background: #ff6b6b; color: white; border: none; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-size: 12px;">Remove</button>`;
+            timeElement.innerHTML = `Saved: ${timeText} ${removeButtonHTML}`;
         }
         actualFavoritesList.insertBefore(existingItem, actualFavoritesList.firstChild);
     } else {
@@ -200,9 +213,9 @@ function addFavoriteToList(pdfUrl, timestamp) {
         favoriteItem.className = 'favorite-item';
         favoriteItem.innerHTML = `
             <a href="${pdfUrl}" target="_blank">${pdfUrl}</a>
-            <small style="color: #888; display: block;">
+            <small>
                 Saved: ${timeText}
-                <button onclick="removeFavoriteFromFavoritesSection('${pdfUrl}')" style="margin-left: 10px; background: #ff6b6b; color: white; border: none; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-size: 12px;">Remove</button>
+                ${removeButtonHTML}
             </small>
         `;
         actualFavoritesList.insertBefore(favoriteItem, actualFavoritesList.firstChild);
