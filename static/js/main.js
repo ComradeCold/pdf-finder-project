@@ -3,7 +3,6 @@ const toggle = document.getElementById("mode-toggle-checkbox");
 const modeKey = "pdfFinderMode";
 
 // --- THEME TOGGLE ---
-// FIX 1: Wrap toggle logic in an existence check to prevent script errors on pages without the toggle
 if (toggle) {
     if (localStorage.getItem(modeKey) === "dark") {
         body.classList.add("dark-mode");
@@ -20,7 +19,7 @@ if (toggle) {
     });
 }
 
-let currentFavorites = new Set(); // Keep this first declaration
+let currentFavorites = new Set(); 
 
 // --- KEY MANAGER FUNCTION ---
 function updateUserKey() {
@@ -37,7 +36,6 @@ function updateUserKey() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'ok') {
-            // Reload the page to fetch the new favorites list for this key
             window.location.reload(); 
         }
     })
@@ -63,7 +61,6 @@ function initializeDropZoneListeners() {
 
     if (!dropZone || !fileInput) return;
 
-    // Click to upload
     dropZone.onclick = () => fileInput.click();
 
     // Drag and Drop Handlers
@@ -87,7 +84,6 @@ function initializeDropZoneListeners() {
         displayImagePreview(file);
     });
 
-    // File Input Change Handler
     fileInput.addEventListener("change", function handleFileInputChange(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -98,7 +94,6 @@ function initializeDropZoneListeners() {
 // --- FAVORITES LOGIC ---
 
 
-// In main.js
 function addFavorite(pdfUrl, buttonElement) {
     console.log(`Attempting to add favorite: ${pdfUrl}`); // Console check 1
     fetch('/api/favorite', {
@@ -122,12 +117,11 @@ function addFavorite(pdfUrl, buttonElement) {
         return response.json();
     })
     .then(data => {
-        // Console check 3: Log the data payload from the server
+        //Log the data payload from the server
         console.log('Server Data Payload:', data); 
         
         if (data.status === 'ok') {
             console.log('SUCCESS: Favorite added successfully.');
-            // ... (rest of the success logic)
             currentFavorites.add(pdfUrl);
             
             buttonElement.innerHTML = '❤️';
@@ -142,7 +136,7 @@ function addFavorite(pdfUrl, buttonElement) {
         }
     })
     .catch(error => {
-        // Console check 4: Network failure or JSON parse error
+        // Network failure or JSON parse error
         console.error('Network or Parse Error during Add Favorite:', error);
     });
 }
