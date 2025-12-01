@@ -1,3 +1,7 @@
+*, *::before, *::after {
+    box-sizing: border-box; 
+}
+
 /* VARIABLES */
 :root {
     --bg-color: #f4f7f6;
@@ -11,7 +15,7 @@
     --input-border: #ccc;
     --input-text: #333;
     --placeholder-color: #777;
-    --link-color: #007bff; /* Matching the link color used in index.html */
+    --link-color: #007bff;
     --link-hover: #0056b3;
     --shadow-color: rgba(0,0,0,0.1);
 
@@ -67,7 +71,7 @@ body.dark-mode {
 /* GENERAL */
 body {
     margin: 0;
-    padding: 40px;
+    padding: 10px 40px 40px 40px; /* Reduced TOP padding from 40px to 10px */
     background: var(--bg-color);
     color: var(--text-color);
     font-family: Segoe UI, Tahoma, sans-serif;
@@ -80,7 +84,7 @@ body {
     width: 100%;
     max-width: 600px;
     background: var(--container-bg);
-    padding: 30px;
+    padding: 15px 30px 30px 30px; /* Reduced TOP padding from 30px to 15px */
     border-radius: 10px;
     box-shadow: 0 4px 12px var(--shadow-color);
 }
@@ -88,12 +92,15 @@ body {
 h1 {
     text-align: center;
     color: var(--primary-color);
+    font-size: 5em; 
+    margin-top: 0; /* Ensures no default margin is pushing it down */
+    margin-bottom: 5px; /* Minimal space below H1 to fit the Key Manager */
 }
 
 /* TOGGLE SWITCH */
 .mode-toggle {
     position: absolute;
-    top: 20px;
+    top: 10px; /* Adjusted to match new body padding */
     right: 20px;
 }
 
@@ -172,32 +179,61 @@ button:hover {
     background: var(--primary-hover);
 }
 
-/* RESULTS */
-.results {
-    margin-top: 30px;
-    padding: 20px;
+/* KEY MANAGER (NEW/UPDATED) */
+.key-manager {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--dropzone-bg);
+    padding: 10px 15px;
     border-radius: 8px;
-    background: var(--container-bg);
-    border: 1px solid var(--input-border);
+    margin-top: 5px; 
+    margin-bottom: 5px;
+    border: 1px solid var(--dropzone-border);
 }
-.results h2 {
+
+.key-manager span {
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.key-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+.key-inputs input {
+    padding: 6px 10px;
+    font-size: 14px;
+    width: 150px;
+    margin-top: 0;
+}
+
+.key-btn {
+    padding: 6px 12px;
+    margin-top: 0;
+    font-size: 14px;
+    background: var(--link-color);
+    color: var(--container-bg);
+}
+
+.key-btn:hover {
+    background: var(--link-hover);
+}
+
+
+/* RESULTS */
+.search-results {
+    margin-top: 30px;
+}
+.search-results h3 {
     color: var(--primary-color);
 }
-.results ul {
+.results-list {
     list-style: none;
     padding: 0;
 }
-.results li {
-    padding: 10px 0;
-    border-bottom: 1px dashed var(--input-border);
-}
-.results a, .link-color {
-    color: var(--link-color);
-    word-break: break-all;
-}
 
-
-/* PDF LINK AND FAVORITE BUTTON STYLES (Moved from index.html) */
 .pdf-link {
     display: flex;
     align-items: center;
@@ -249,8 +285,7 @@ button:hover {
     color: var(--favorite-btn-active-color);
 }
 
-
-/* Favorites Section (Moved and Updated from index.html) */
+/* Favorites Section */
 .favorites-section {
     margin-top: 30px;
     padding: 20px;
@@ -284,13 +319,11 @@ button:hover {
 }
 
 .no-favorites-message {
-    /* Style for the empty favorites message */
     color: var(--favorite-item-text);
     font-style: italic;
 }
 
 .remove-btn {
-    /* Style for the Remove button */
     background: var(--remove-btn-bg);
     color: var(--remove-btn-color);
     border: none;
@@ -299,4 +332,15 @@ button:hover {
     cursor: pointer;
     font-size: 12px;
     margin-left: 10px;
+}
+
+.no-results-message { 
+    font-size: 1.1em;
+    padding: 15px;
+    background: var(--pdf-link-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    color: var(--text-color);
+    text-align: center;
+    margin-top: 20px;
 }

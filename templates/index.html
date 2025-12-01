@@ -3,7 +3,7 @@
 <head>
     <title>PDF Finder</title>
     <link rel="stylesheet" href="/static/css/styles.css">
-</head>
+    </head>
 <body id="app-body">
 
 <div class="mode-toggle">
@@ -14,56 +14,67 @@
 </div>
 
 <div class="container">
-<h1>PDF Finder</h1>
-
-<form id="form" method="post" enctype="multipart/form-data">
-    <input type="text" name="query" placeholder="Enter search term" value="{{ query }}">
-
-    <div class="drop-zone" id="drop-zone">
-        Drop image here or click to upload<br>
+    
+    <h1>PDF Finder</h1> <div class="key-manager">
+        <span>Current List: <strong>{{ user_key }}</strong></span>
+        <div class="key-inputs">
+            <input type="text" id="user-key-input" placeholder="Enter key (e.g. 'jakub_list')" value="{{ user_key if user_key != 'public' }}">
+            <button onclick="updateUserKey()" class="key-btn">Load List</button>
+        </div>
     </div>
+    
+    <form id="form" method="post" enctype="multipart/form-data">
+        <input type="text" name="query" placeholder="Enter search term" value="{{ query }}">
 
-    <input type="file" name="image" id="image-input" style="display:none;" accept="image/*">
+        <div class="drop-zone" id="drop-zone">
+            Drop image here or click to upload<br>
+        </div>
 
-    <img id="preview" class="preview" />
+        <input type="file" name="image" id="image-input" style="display:none;" accept="image/*">
 
-    <button type="submit">Search</button>
-</form>
+        <img id="preview" class="preview" />
 
-{% if pdfs %}
-<div class="search-results">
-    <h3>Search Results</h3>
-    <div class="results-list">
-        {% for pdf in pdfs %}
-            <div class="pdf-link">
-                <a href="{{ pdf }}" target="_blank" style="flex-grow: 1;">{{ pdf }}</a>
-                <button class="favorite-btn" onclick="addFavorite('{{ pdf }}', this)">
-                    ♡
-                </button>
-            </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
+        <button type="submit">Search</button>
+    </form>
 
-<div class="favorites-section">
-    <h3>Your Favorites:</h3>
-    {% if favorites %}
-        <div class="favorites-list">
-            {% for favorite in favorites %}
-                <div class="favorite-item">
-                    <a href="{{ favorite[0] }}" target="_blank">{{ favorite[0] }}</a>
-                    <small>
-                        Saved: {{ favorite[1] }}
-                        <button class="remove-btn" onclick="removeFavoriteFromFavoritesSection('{{ favorite[0] }}')">Remove</button>
-                    </small>
+    {% if pdfs %}
+    <div class="search-results">
+        <h3>Search Results</h3>
+        <div class="results-list">
+            {% for pdf in pdfs %}
+                <div class="pdf-link">
+                    <a href="{{ pdf }}" target="_blank">{{ pdf }}</a>
+                    <button class="favorite-btn" onclick="addFavorite('{{ pdf }}', this)">
+                        ♡
+                    </button>
                 </div>
             {% endfor %}
         </div>
-    {% else %}
-        <p class="no-favorites-message">No favorites yet. Click the "Favorite" button next to PDF links to save them here.</p>
+    </div>
+    {% elif query or (pdfs is not none and not results_found) %}
+    <div class="search-results">
+        <p class="no-results-message"> Nothing was found for your search query. Try different keywords or a clearer image.</p>
+    </div>
     {% endif %}
-</div>
+
+    <div class="favorites-section">
+        <h3>Your Favorites ({{ user_key }}):</h3>
+        {% if favorites %}
+            <div class="favorites-list">
+                {% for favorite in favorites %}
+                    <div class="favorite-item">
+                        <a href="{{ favorite[0] }}" target="_blank">{{ favorite[0] }}</a>
+                        <small>
+                            Saved: {{ favorite[1] }}
+                            <button class="remove-btn" onclick="removeFavoriteFromFavoritesSection('{{ favorite[0] }}')">Remove</button>
+                        </small>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-favorites-message">No favorites yet for this list. Click the "Favorite" button next to PDF links to save them here.</p>
+        {% endif %}
+    </div>
 </div>
 
 <script>
