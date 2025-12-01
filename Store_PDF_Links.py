@@ -7,6 +7,7 @@ config = {
     'database': 'pdf_finder'
 }
 
+# stores user's clicks on pdf links
 def store_click(link_url):
     cnx = mysql.connector.connect(**config)
     cursor = cnx.cursor()
@@ -25,7 +26,7 @@ def store_click(link_url):
     cursor.close()
     cnx.close()
 
-
+# print SQL table format
 def print_clicks():
     cnx = mysql.connector.connect(**config)
     cursor = cnx.cursor()

@@ -9,7 +9,7 @@ app = Flask(__name__)
 API_KEY = os.environ.get("API_KEY")
 CX = os.environ.get("CX")
 
-
+# search API for PDF links
 def google_pdf_search(query, num_results=10):
     url = "https://www.googleapis.com/customsearch/v1"
     params = {
@@ -32,7 +32,7 @@ def google_pdf_search(query, num_results=10):
     except Exception as e:
         return {"error": f"Unexpected search error: {e}"}
 
-
+# extracts text from user input image
 def extract_text_from_image(file):
     try:
         client = vision.ImageAnnotatorClient()
@@ -49,7 +49,7 @@ def extract_text_from_image(file):
     except Exception as e:
         return {"error": f"Unexpected OCR error: {e}"}
 
-
+# loads favorited pdf links from database
 def get_favorites():
     try:
         cnx = pymysql.connect(**config)
@@ -81,7 +81,7 @@ def get_favorites():
     except Exception as e:
         return []
 
-
+# homepage
 @app.route("/", methods=["GET", "POST"])
 def home():
     pdfs = []
@@ -120,7 +120,7 @@ def home():
 
     return render_template("index.html", pdfs=pdfs, query=query, favorites=favorites)
 
-
+# database configurations
 def get_db_config():
     if os.environ.get('K_SERVICE'):
         db_config = {
@@ -144,6 +144,7 @@ def get_db_config():
 
 config = get_db_config()
 
+# stores users' pdf link clicks in SQL database table
 def store_click(link_url):
     try:
         cnx = pymysql.connect(**config)
@@ -179,7 +180,7 @@ def store_click(link_url):
     except Exception:
         return False
 
-
+# saves pdf to favorites SQL table
 def store_favorite(link_url):
     try:
         cnx = pymysql.connect(**config)
@@ -202,7 +203,7 @@ def store_favorite(link_url):
     except Exception:
         return False
 
-
+# removes pdf from favorites
 def remove_favorite(link_url):
     try:
         cnx = pymysql.connect(**config)
@@ -217,7 +218,7 @@ def remove_favorite(link_url):
     except Exception:
         return False
 
-
+# log pdf clicks
 @app.post("/api/click")
 def api_click():
     try:
@@ -237,7 +238,7 @@ def api_click():
     except Exception:
         return jsonify({"error": "Internal server error"}), 500
 
-
+# favorites: add or remove the pdf link
 @app.post("/api/favorite")
 def api_favorite():
     try:
@@ -265,7 +266,7 @@ def api_favorite():
     except Exception:
         return jsonify({"error": "Internal server error"}), 500
 
-
+# sends stored favorited pdfs to website
 @app.route("/api/get-favorites")
 def api_get_favorites():
     try:
@@ -278,7 +279,7 @@ def api_get_favorites():
     except Exception:
         return jsonify({"error": "Failed to get favorites"}), 500
 
-
+# checks if database tables exist
 def ensure_tables():
     try:
         cnx = pymysql.connect(**config)

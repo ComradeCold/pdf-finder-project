@@ -6,6 +6,7 @@
 </head>
 <body id="app-body">
 
+    <!-- toggle switch for light/dark mode -->
 <div class="mode-toggle">
     <label class="switch">
         <input type="checkbox" id="mode-toggle-checkbox">
@@ -13,9 +14,11 @@
     </label>
 </div>
 
+<!-- container for the page content -->
 <div class="container">
 <h1>PDF Finder</h1>
 
+ <!-- search entry: allows keyword input and image upload -->
 <form id="form" method="post" enctype="multipart/form-data">
     <input type="text" name="query" placeholder="Enter search term" value="{{ query }}">
 
@@ -30,6 +33,7 @@
     <button type="submit">Search</button>
 </form>
 
+<!-- search results section -->
 {% if pdfs %}
 <div class="search-results">
     <h3>Search Results</h3>
@@ -46,6 +50,7 @@
 </div>
 {% endif %}
 
+ <!-- favorites section -->
 <div class="favorites-section">
     <h3>Your Favorites:</h3>
     {% if favorites %}
@@ -66,6 +71,7 @@
 </div>
 </div>
 
+<!-- tracks user clicks on PDF links -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".pdf-link a").forEach(link => {

@@ -2,10 +2,13 @@ const body = document.getElementById("app-body");
 const toggle = document.getElementById("mode-toggle-checkbox");
 const modeKey = "pdfFinderMode";
 
+// saved mode is loaded and apply dark mode
 if (localStorage.getItem(modeKey) === "dark") {
     body.classList.add("dark-mode");
     toggle.checked = true;
 }
+
+// toggle light or dark mode and save
 toggle.addEventListener("change", () => {
     if (toggle.checked) {
         body.classList.add("dark-mode");
@@ -16,6 +19,7 @@ toggle.addEventListener("change", () => {
     }
 });
 
+// drop image for searching
 const dropZone = document.getElementById("drop-zone");
 const fileInput = document.getElementById("image-input");
 const preview = document.getElementById("preview");
@@ -60,8 +64,10 @@ fileInput.addEventListener("change", e => {
     reader.readAsDataURL(file);
 });
 
+// store favorites
 let currentFavorites = new Set();
 
+// add pdf link to favorites SQL table and updates UI "Your Favorites" section
 function addFavorite(pdfUrl, buttonElement) {
     fetch('/api/favorite', {
         method: 'POST',
@@ -91,6 +97,7 @@ function addFavorite(pdfUrl, buttonElement) {
     });
 }
 
+// Unfavorites a PDF with the heart button, updates table and UI
 function removeFavorite(pdfUrl, buttonElement) {
     fetch('/api/favorite', {
         method: 'POST',
@@ -115,6 +122,7 @@ function removeFavorite(pdfUrl, buttonElement) {
     });
 }
 
+// updates heart icons on the website
 function updateAllHeartButtons(pdfUrl, isFavorited) {
     const allFavoriteButtons = document.querySelectorAll('.favorite-btn');
     allFavoriteButtons.forEach(button => {
@@ -138,6 +146,7 @@ function updateAllHeartButtons(pdfUrl, isFavorited) {
     });
 }
 
+// removes favorite pdf link on UI
 function removeFavoriteFromList(pdfUrl) {
     const favoritesList = document.querySelector('.favorites-list');
     if (!favoritesList) return;
@@ -163,6 +172,7 @@ function removeFavoriteFromList(pdfUrl) {
     }
 }
 
+// add favorited pdf link to top of "Your Favorites" seciton on UI
 function addFavoriteToList(pdfUrl, timestamp) {
     const favoritesSection = document.querySelector('.favorites-section');
     if (!favoritesSection) return;
@@ -222,6 +232,7 @@ function addFavoriteToList(pdfUrl, timestamp) {
     }
 }
 
+// show timestamp for favorited pdf links
 function formatTimestamp(timestamp) {
     const now = new Date();
     const diffMs = now - new Date(timestamp);
@@ -237,6 +248,7 @@ function formatTimestamp(timestamp) {
     return timestamp.toLocaleDateString() + ' ' + timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 }
 
+// remove button from favorites seciton
 function removeFavoriteFromFavoritesSection(pdfUrl) {
     fetch('/api/favorite', {
         method: 'POST',
@@ -261,6 +273,7 @@ function removeFavoriteFromFavoritesSection(pdfUrl) {
     });
 }
 
+// load current favorites on a session
 function initializeFavorites() {
     fetch('/api/get-favorites')
         .then(response => response.json())
@@ -278,6 +291,7 @@ function initializeFavorites() {
         });
 }
 
+// update all heart icons after loading favorites on a session
 function updateHeartButtonsFromFavorites() {
     const allFavoriteButtons = document.querySelectorAll('.favorite-btn');
     allFavoriteButtons.forEach(button => {
@@ -302,6 +316,7 @@ function updateHeartButtonsFromFavorites() {
     });
 }
 
+// initial page loadout
 document.addEventListener('DOMContentLoaded', function() {
     initializeFavorites();
     
@@ -356,6 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
     attachEventListeners();
 });
 
+// keep track of user clicks on PDF links
 function attachEventListeners() {
     document.querySelectorAll(".pdf-link a").forEach(link => {
         link.addEventListener("click", () => {
